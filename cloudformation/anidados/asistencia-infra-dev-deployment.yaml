@@ -1,0 +1,15 @@
+template-file-path: cloudformation/anidados/principal.yaml
+parameters:
+  Proyecto: asistencia
+  Ambiente: dev
+  TipoInstancia: t3.micro
+  TemplatesBucket: asistencia-cfn-dev-677265516068-us-east-1
+  TemplatesPrefix: anidados
+  SshCidr: 166.114.175.177/32
+  LlavePublica: >-
+    ssh-ed25519
+    AAAAC3NzaC1lZDI1NTE5AAAAIDjN9TC8DN6ZgDMn0euOi7H0l4h08zAXGEE6aFqs4KeZ
+    ecs@DESKTOP-CPE8DKF
+  UbuntuAmi: >-
+    /aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id
+tags: {}
