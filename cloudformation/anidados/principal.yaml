@@ -125,10 +125,15 @@ Resources:
   # NUEVA INSTANCIA EC2 DE PRUEBA
   # ==========================================
 
-LlaveServidorPrueba:
+
+  # ==========================================
+  # 5. NUEVA INSTANCIA EC2 DE PRUEBA
+  # ==========================================
+
+  LlaveServidorPrueba:
     Type: AWS::EC2::KeyPair
     Properties:
-      KeyName: !Sub '${Proyecto}-${Ambiente}-prueba-cfn-key'
+      KeyName: !Sub '${Proyecto}-${Ambiente}-prueba-02-cfn-key'
       PublicKeyMaterial: !Ref LlavePublica
 
   ServidorPrueba:
@@ -137,7 +142,6 @@ LlaveServidorPrueba:
       ImageId: !Ref UbuntuAmi
       InstanceType: !Ref TipoInstancia
       KeyName: !Ref LlaveServidorPrueba
-
       SubnetId: !GetAtt Red.Outputs.SubnetPublicaId
 
       SecurityGroupIds:
@@ -157,19 +161,12 @@ LlaveServidorPrueba:
       Tags:
         - Key: Name
           Value: !Sub '${Proyecto}-${Ambiente}-prueba'
-
         - Key: Proyecto
           Value: !Ref Proyecto
-
         - Key: Ambiente
           Value: !Ref Ambiente
-
         - Key: Responsable
           Value: Equipo-AsistencIAU
-
-
-
-          
         
     
 Outputs:
