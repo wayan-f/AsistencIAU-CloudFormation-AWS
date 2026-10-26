@@ -1,0 +1,9 @@
+# Validaciones opcionales con AWS CloudFormation Guard (cfn-guard)
+# Exigir IMDSv2 para cada EC2
+rule ec2_imdsv2 when Resources.*[ Type == 'AWS::EC2::Instance' ] !empty {
+  Resources.*[ Type == 'AWS::EC2::Instance' ].Properties.MetadataOptions.HttpTokens == 'required'
+}
+# Exigir cifrado de discos EBS
+rule ec2_ebs_cifrado when Resources.*[ Type == 'AWS::EC2::Instance' ] !empty {
+  Resources.*[ Type == 'AWS::EC2::Instance' ].Properties.BlockDeviceMappings.*.Ebs.Encrypted == true
+}

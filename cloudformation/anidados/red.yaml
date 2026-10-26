@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: AsistencIAU - Red publica para frontend y backend
+Parameters:
+  Proyecto: {Type: String}
+  Ambiente: {Type: String}
+Resources:
+  # VPC para las dos instancias EC2
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - {Key: Name, Value: !Sub '${Proyecto}-${Ambiente}-vpc'}
+  # Subred publica: ambas EC2 tienen IP publica, como en el YAML original
+  SubnetPublica:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.1.0/24
+      MapPublicIpOnLaunch: true
+      Tags:
+        - {Key: Name, Value: !Sub '${Proyecto}-${Ambiente}-publica'}
+  # Acceso a Internet
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+  AdjuntarGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+  TablaRutas:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+  RutaInternet:
+    Type: AWS::EC2::Route
+    DependsOn: AdjuntarGateway
+    Properties:
+      RouteTableId: !Ref TablaRutas
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+  AsociarTabla:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref SubnetPublica
+      RouteTableId: !Ref TablaRutas
+Outputs:
+  VpcId: {Value: !Ref VPC}
+  SubnetPublicaId: {Value: !Ref SubnetPublica}

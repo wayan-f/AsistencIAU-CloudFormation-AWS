@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: AsistencIAU - Plantilla reutilizable para servidor FRONTEND o BACKEND
+Parameters:
+  Proyecto: {Type: String}
+  Ambiente: {Type: String}
+  Rol: {Type: String, AllowedValues: [frontend, backend]}
+  TipoInstancia: {Type: String, Default: t3.micro}
+  UbuntuAmi: {Type: AWS::EC2::Image::Id}
+  LlavePublica: {Type: String, NoEcho: true}
+  SubnetId: {Type: AWS::EC2::Subnet::Id}
+  SecurityGroupId: {Type: AWS::EC2::SecurityGroup::Id}
+Resources:
+  # Llave SSH para entrar al servidor correspondiente
+  LlaveSSH:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyName: !Sub '${Proyecto}-${Ambiente}-${Rol}-cfn-key'
+      PublicKeyMaterial: !Ref LlavePublica
+      Tags:
+        - {Key: Proyecto, Value: !Ref Proyecto}
+        - {Key: Ambiente, Value: !Ref Ambiente}
+  # Servidor FRONTEND o BACKEND: la misma plantilla se usa dos veces
+  Instancia:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref UbuntuAmi
+      InstanceType: !Ref TipoInstancia
+      KeyName: !Ref LlaveSSH
+      SubnetId: !Ref SubnetId
+      SecurityGroupIds: [!Ref SecurityGroupId]
+      MetadataOptions:
+        HttpTokens: required
+        HttpEndpoint: enabled
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs: {VolumeSize: 20, VolumeType: gp3, Encrypted: true}
+      Tags:
+        - {Key: Name, Value: !Sub '${Proyecto}-${Ambiente}-${Rol}'}
+        - {Key: Proyecto, Value: !Ref Proyecto}
+        - {Key: Ambiente, Value: !Ref Ambiente}
+Outputs:
+  IpPublica: {Value: !GetAtt Instancia.PublicIp}
+  IdInstancia: {Value: !Ref Instancia}
