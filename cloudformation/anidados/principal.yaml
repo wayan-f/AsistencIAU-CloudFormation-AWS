@@ -118,7 +118,7 @@ Resources:
         LlavePublica: !Ref LlavePublica
         SubnetId: !GetAtt Red.Outputs.SubnetPublicaId
         SecurityGroupId: !GetAtt Seguridad.Outputs.BackendSGId
-        LlaveServidorPrueba:
+        
     
 Outputs:
 
