@@ -40,6 +40,7 @@ Resources:
         - {Key: Ambiente, Value: !Ref Ambiente}
         - {Key: Responsable, Value: Equipo-AsistencIAU}
         - {Key: Autor, Value: Bryan}
+        - {Key: Autor, Value: Gladys}
 Outputs:
   IpPublica: {Value: !GetAtt Instancia.PublicIp}
   IdInstancia: {Value: !Ref Instancia}
